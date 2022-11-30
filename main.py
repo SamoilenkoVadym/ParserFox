@@ -4,7 +4,6 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-import csv
 import pandas as pd
 import os
 
@@ -48,17 +47,6 @@ def get_all_pages():
 def collect_data(pages_count):
     cur_date = datetime.now().strftime("%d_%m_%Y")
 
-    # with open(f"data_{cur_date}.csv", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(
-    #         (
-    #             "Model"
-    #             "Price"
-    #             "Url"
-    #         )
-    #     )
-
-
 
     data = []
     for page in range(1, pages_count):
@@ -71,10 +59,11 @@ def collect_data(pages_count):
 
                 for item in items_card:
                     Model = item.find("a", class_="card__title").text.strip().split(" ")
-                    Price = item.find("div", class_="card-price").text.replace("₴", "").replace(" ", "").replace("\n", "")
+                    #Price = item.find("div", class_="card__price-discount").text.strip()
+                    Promo_Price = item.find("div", class_="card-price").text.replace("₴", "").replace(" ", "").replace("\n", "")
                     Lnk = item.find("a", class_="card__title").get("href")
                     Url = f'https://www.foxtrot.com.ua{Lnk}'
-                    Row = Model[1:], Price, Url
+                    Row = Model[1:], Promo_Price, Url
                     data.append(Row)
                     print(Row)
 
@@ -86,7 +75,7 @@ def collect_data(pages_count):
     with open(f"data_{cur_date}.json", "a", encoding="UTF-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
-    df = pd.DataFrame(data, columns=['Model', 'Price', 'URL'])
+    df = pd.DataFrame(data, columns=['Model', 'Promo_Price', 'URL'])
     df.to_csv(f'data_{cur_date}.csv', index=False, sep=';', encoding='utf-8')
 
 def main():
