@@ -57,18 +57,19 @@ def collect_data(pages_count):
                 items_card = soup.find_all("div", class_="card__body")
 
                 for item in items_card:
-                    try:
-                        Model = item.find("a", class_="card__title").text.strip().split(" ")
-                        Price = item.find("div", class_="card-price").text.replace('₴', "").replace('\n', "").replace(" ","")
-                        Link = item.find("a")
-                        Url = f'https://www.foxtrot.com.ua{Link.get("href")}'
-                        Price_discount = item.find("div", class_="card__price-discount").text.split("-")
-                        Row = " ".join(Model[1:]), Price_discount[0].replace('\n', "").replace(" ", "").replace('₴', ''),Price, Url,
-                        data.append(Row)
-                        print(Row)
-                    except Exception:
-                        print("Exception! What's wrong?")
 
+                    Model = item.find("a", class_="card__title").text.strip().split(" ")
+                    Price = item.find("div", class_="card-price").text.replace('₴', '').replace('\n', "").replace(" ", "")
+                    Link = item.find("a", class_="card__title").get("href")
+                    Url = f'https://www.foxtrot.com.ua{Link}'
+                    try:
+                        Price_discount = item.find("div", class_="card__price-discount").text.split("-")
+                        Price_discount_2 = Price_discount[0].replace('\n', "").replace(" ", "")
+                    except Exception:
+                        Price_discount_2 = ""
+                    Row = " ".join(Model[1:]),Price_discount_2, Price, Url
+                    data.append(Row)
+                    print(Row)
 
 
 
