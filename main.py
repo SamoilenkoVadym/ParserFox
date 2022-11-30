@@ -59,11 +59,11 @@ def collect_data(pages_count):
 
                 for item in items_card:
                     Model = item.find("a", class_="card__title").text.strip().split(" ")
-                    #Price = item.find("div", class_="card__price-discount").text.strip()
+                    Price = item.find("div", class_="card__price-wrap").text.replace("\n", "")
                     Promo_Price = item.find("div", class_="card-price").text.replace("₴", "").replace(" ", "").replace("\n", "")
                     Lnk = item.find("a", class_="card__title").get("href")
                     Url = f'https://www.foxtrot.com.ua{Lnk}'
-                    Row = Model[1:], Promo_Price, Url
+                    Row = Model[1:], Promo_Price, Price, Url
                     data.append(Row)
                     print(Row)
 
@@ -75,7 +75,7 @@ def collect_data(pages_count):
     with open(f"data_{cur_date}.json", "a", encoding="UTF-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
-    df = pd.DataFrame(data, columns=['Model', 'Promo_Price', 'URL'])
+    df = pd.DataFrame(data, columns=['Model', 'Promo_Price', 'Price', 'URL'])
     df.to_csv(f'data_{cur_date}.csv', index=False, sep=';', encoding='utf-8')
 
 def main():
